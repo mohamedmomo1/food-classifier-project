@@ -1,0 +1,470 @@
+.subscriber-panel-container {
+  padding: 2rem 0;
+}
+
+.subscriber-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.subscriber-header h1 {
+  font-size: 2.5rem;
+  margin: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subscriber-header p {
+  color: var(--text);
+  margin-top: 0.5rem;
+}
+
+/* Coach Info Card */
+.coach-info-card {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-left: 5px solid #667eea;
+}
+
+.coach-info-card h2 {
+  margin-top: 0;
+  color: var(--text-h);
+}
+
+.coach-info-card p {
+  color: var(--text);
+  margin: 0.5rem 0;
+  font-size: 1.05rem;
+}
+
+.coach-info-card strong {
+  color: var(--text-h);
+  font-weight: 700;
+}
+
+.plan-info,
+.no-plan {
+  background: var(--bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.plan-info h3 {
+  margin-top: 0;
+  color: #4ecdc4;
+}
+
+.no-plan {
+  border-left: 4px solid #ffa500;
+}
+
+.no-plan p {
+  margin: 0;
+  color: var(--text);
+}
+
+/* Today's Summary */
+.today-summary {
+  margin-bottom: 2rem;
+}
+
+.today-summary h2 {
+  margin-bottom: 1.5rem;
+  color: var(--text-h);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-card {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card .icon {
+  font-size: 2.5rem;
+}
+
+.summary-card .content {
+  flex: 1;
+}
+
+.summary-card .label {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.summary-card .value {
+  margin: 0.3rem 0 0 0;
+  color: var(--text-h);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.calories-card {
+  border-left: 4px solid #ff6b6b;
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, transparent 100%);
+}
+
+.meals-card {
+  border-left: 4px solid #ffa500;
+  background: linear-gradient(135deg, rgba(255, 165, 0, 0.05) 0%, transparent 100%);
+}
+
+.compliance-card {
+  border-left: 4px solid #4ecdc4;
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.05) 0%, transparent 100%);
+}
+
+/* Meals Section */
+.meals-section {
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: var(--text-h);
+}
+
+.meals-by-type {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.meal-type-card {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.meal-type-card:hover {
+  transform: translateY(-3px);
+  border-color: #667eea;
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+}
+
+.meal-header {
+  background: var(--code-bg);
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--border);
+}
+
+.meal-header h3 {
+  margin: 0;
+  color: var(--text-h);
+  font-size: 1.2rem;
+}
+
+.meal-calories {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.meal-content {
+  padding: 1rem;
+}
+
+.meals-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.meal-item {
+  background: var(--code-bg);
+  padding: 0.8rem;
+  border-radius: 8px;
+  border-left: 3px solid #667eea;
+}
+
+.food-name {
+  display: block;
+  color: var(--text-h);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.meal-macros {
+  display: block;
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.no-meals {
+  color: var(--text);
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+  margin: 0;
+}
+
+.btn-add-meal {
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 0 0 12px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-add-meal:hover {
+  opacity: 0.9;
+}
+
+/* Compliance Section */
+.compliance-section {
+  background: var(--code-bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.compliance-section h2 {
+  margin-top: 0;
+  color: var(--text-h);
+}
+
+.compliance-card {
+  background: var(--bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.progress-info {
+  margin-bottom: 1.5rem;
+}
+
+.progress-info p {
+  margin: 0.5rem 0;
+  color: var(--text);
+}
+
+.progress-info em {
+  font-size: 0.85rem;
+  color: var(--text);
+  font-style: italic;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 30px;
+  background: var(--code-bg);
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 2px solid var(--border);
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.5s ease;
+}
+
+.compliance-tips {
+  background: var(--code-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #ffa500;
+}
+
+.compliance-tips h3 {
+  margin-top: 0;
+  color: var(--text-h);
+}
+
+.compliance-tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.compliance-tips li {
+  color: var(--text);
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.compliance-tips li:before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #4ecdc4;
+  font-weight: bold;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-secondary {
+  padding: 0.8rem 1.5rem;
+  background: var(--code-bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-h);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+/* No Coach State */
+.no-coach-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: var(--code-bg);
+  border-radius: 12px;
+  border: 2px dashed var(--border);
+}
+
+.no-coach-state h2 {
+  color: var(--text-h);
+  margin-top: 0;
+}
+
+.no-coach-state p {
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+/* Error Message */
+.error-message {
+  padding: 1rem;
+  background: #fee;
+  color: #c33;
+  border-left: 4px solid #c33;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .subscriber-header h1 {
+    font-size: 2rem;
+  }
+
+  .coach-info-card {
+    padding: 1.5rem;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .meals-by-type {
+    grid-template-columns: 1fr;
+  }
+
+  .meal-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn-secondary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .subscriber-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .coach-info-card {
+    padding: 1rem;
+  }
+
+  .compliance-section {
+    padding: 1rem;
+  }
+
+  .progress-bar-container {
+    height: 25px;
+  }
+
+  .meal-header {
+    padding: 1rem;
+  }
+
+  .meal-content {
+    padding: 0.8rem;
+  }
+
+  .summary-card {
+    padding: 1rem;
+  }
+
+  .summary-card .icon {
+    font-size: 2rem;
+  }
+}

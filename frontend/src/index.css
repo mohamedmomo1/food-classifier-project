@@ -50,6 +50,14 @@
   }
 }
 
+html {
+  direction: ltr;
+}
+
+html[dir="rtl"] {
+  direction: rtl;
+}
+
 body {
   margin: 0;
 }

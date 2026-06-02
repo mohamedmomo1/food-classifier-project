@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <!-- Outer Circle -->
+  <circle cx="80" cy="100" r="70" fill="none" stroke="#4ecca7" stroke-width="8"/>
+
+  <!-- Inner design -->
+  <circle cx="80" cy="100" r="55" fill="none" stroke="#2a8659" stroke-width="3" opacity="0.6"/>
+
+  <!-- Apple shape -->
+  <path d="M 60 75 Q 50 65 65 60 Q 75 55 75 65 Q 75 75 65 85 Q 55 92 60 75 Z" fill="#4ecca7"/>
+  <circle cx="75" cy="75" r="3" fill="#2a8659"/>
+
+  <!-- Fork shape -->
+  <line x1="85" y1="95" x2="95" y2="65" stroke="#4ecca7" stroke-width="3" stroke-linecap="round"/>
+  <line x1="95" y1="65" x2="90" y2="130" stroke="#4ecca7" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="90" cy="135" r="3" fill="#4ecca7"/>
+  <line x1="85" y1="70" x2="92" y2="75" stroke="#4ecca7" stroke-width="2"/>
+
+  <!-- Leaf accent -->
+  <path d="M 70 70 Q 65 65 70 60 Q 75 65 70 70 Z" fill="#a8d35f" opacity="0.8"/>
+
+  <!-- Text: BEFIT -->
+  <text x="160" y="120" font-size="72" font-weight="bold" font-family="Arial, sans-serif" fill="#2a8659" letter-spacing="2">BEFIT</text>
+
+  <!-- Tagline -->
+  <text x="160" y="150" font-size="20" font-family="Arial, sans-serif" fill="#7a9f9f" letter-spacing="4">SNAP.TRACK.ACHIEVE.</text>
+</svg>

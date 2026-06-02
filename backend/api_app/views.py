@@ -101,7 +101,7 @@ def parse_date(date_str):
 
 @api_view(['POST'])
 def predict_food(request):
-    """تحديد نوع الطعام من الصورة"""
+    """تحديد نوع الطعام من الصورة مع إرجاع تفاصيل الأطعمة المكتشفة"""
     if 'image' not in request.FILES:
         return Response({'error': 'Please upload an image under the key "image"'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -136,6 +136,7 @@ def predict_food(request):
                 raw_unit = food_data.get('serving_unit', 'gram')
                 raw_name = food_data.get('name', food_key)
                 name_ar = food_data.get('name_ar', raw_name)
+                image_url = food_data.get('image_url', '/static/food_images/default.jpg')
 
                 unit_ar = ARABIC_UNITS_MAPPING.get(raw_unit.lower(), raw_unit)
 
@@ -146,7 +147,8 @@ def predict_food(request):
                     'unit_ar': unit_ar,
                     'unit_en': raw_unit,
                     'calories': food_data.get('calories', 150),
-                    'meal_type': food_data.get('meal_type', 'snack')
+                    'meal_type': food_data.get('meal_type', 'snack'),
+                    'image_url': image_url
                 })
             else:
                 fallback_key = food_key.lower().strip()
@@ -156,12 +158,14 @@ def predict_food(request):
                     'unit_ar': 'جرام',
                     'unit_en': 'gram',
                     'calories': 100,
-                    'meal_type': 'snack'
+                    'meal_type': 'snack',
+                    'image_url': '/static/food_images/default.jpg'
                 })
 
         return Response({
             'success': True,
-            'predictions': predictions_response
+            'predictions': predictions_response,
+            'count': len(predictions_response)
         }, status=status.HTTP_200_OK)
 
     except Exception as e:
@@ -170,17 +174,24 @@ def predict_food(request):
 
 @api_view(['GET'])
 def search_foods(request):
-    """البحث عن الأطعمة"""
+    """البحث عن الأطعمة بـ auto-complete (عربي وإنجليزي)"""
     try:
         db = settings.MONGO_DB
         food_collection = db["food_database"]
 
-        query = request.GET.get('query', '')
+        query = request.GET.get('query', '').strip()
         meal_type = request.GET.get('meal_type', None)
+
+        if not query:
+            return Response({
+                'success': True,
+                'foods': [],
+                'count': 0
+            }, status=status.HTTP_200_OK)
 
         search_filter = {
             "$or": [
-                {"name": {"$regex": query, "$options": "i"}},
+                {"name": {"$regex": f"^{query}", "$options": "i"}},
                 {"name_ar": {"$regex": query, "$options": "i"}}
             ]
         }

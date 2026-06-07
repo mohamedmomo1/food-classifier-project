@@ -95,5 +95,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
-MONGO_CLIENT = MongoClient("mongodb://localhost:27017/")
+import os
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
+MONGO_CLIENT = MongoClient(MONGO_URI)
 MONGO_DB = MONGO_CLIENT["food_classifier_db"]

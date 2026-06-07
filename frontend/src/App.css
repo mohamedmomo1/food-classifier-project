@@ -8,20 +8,23 @@
 
 .app-main {
   flex: 1;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
 }
 
 @media (max-width: 768px) {
   .app-main {
-    padding: 1.5rem;
+    padding: 0 !important;
   }
 }
 
 @media (max-width: 480px) {
   .app-main {
-    padding: 1rem;
+    padding: 0 !important;
   }
 }

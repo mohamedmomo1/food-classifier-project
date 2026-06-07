@@ -9,7 +9,7 @@ export const translations = {
       home: 'الرئيسية',
       search: 'البحث',
       history: 'السجل',
-      coach: 'لوحة الكوتش',
+      coach: 'الخطط',
       subscriber: 'لوحة المشترك',
       account: 'حسابي',
       logout: 'تسجيل الخروج',
@@ -87,7 +87,7 @@ export const translations = {
     },
     // Coach
     coach: {
-      title: 'لوحة الكوتش',
+      title: 'الخطط',
       myPlans: 'أنظمتي الغذائية',
       mySubscribers: 'مشتركوي',
       createPlan: 'إنشاء نظام جديد',
@@ -147,7 +147,7 @@ export const translations = {
       home: 'Home',
       search: 'Search',
       history: 'History',
-      coach: 'Coach Panel',
+      coach: 'Plans',
       subscriber: 'Subscriber Panel',
       account: 'Account',
       logout: 'Logout',
@@ -225,7 +225,7 @@ export const translations = {
     },
     // Coach
     coach: {
-      title: 'Coach Panel',
+      title: 'Plans',
       myPlans: 'My Diet Plans',
       mySubscribers: 'My Subscribers',
       createPlan: 'Create New Plan',

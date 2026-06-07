@@ -1,0 +1,121 @@
+/* ============ DASHBOARD SCOPED STYLES ============ */
+/* These styles ONLY apply to the Dashboard component */
+
+/* 1. Slim Header Bar with Proper Padding */
+.dashboard-header-bar {
+  padding: 0.5rem 0 !important;
+  margin-bottom: 1.5rem !important;
+  overflow: visible !important;
+  width: 100% !important;
+}
+
+.dashboard-header-content {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  gap: 1rem !important;
+}
+
+.dashboard-header-content button {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+  padding: 0.4rem 0.8rem !important;
+}
+
+.dashboard-header-content button .MuiButton-endIcon {
+  margin-right: 0.4rem !important;
+  margin-left: 0.4rem !important;
+}
+
+.dashboard-header-content button span {
+  overflow: visible !important;
+  display: inline-block !important;
+}
+
+/* 2. Constrained Cards Wrapper - 950px max-width */
+.dashboard-cards-wrapper {
+  max-width: 950px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+.dashboard-card {
+  border-radius: 12px !important;
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+/* 3. Search Button - Constrained & Centered */
+.dashboard-search-btn {
+  max-width: 950px !important;
+  margin: 0 auto !important;
+  padding: 0.7rem 2rem !important;
+  border-radius: 8px !important;
+  font-size: 0.95rem !important;
+  height: auto !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+.dashboard-search-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 24px rgba(228, 63, 90, 0.5) !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dashboard-header-bar {
+    padding: 0.4rem 0 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .dashboard-header-content {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+
+  .dashboard-cards-wrapper {
+    max-width: 100% !important;
+    padding: 0 10px !important;
+  }
+
+  .dashboard-search-btn {
+    max-width: 100% !important;
+    padding: 0.6rem 1.5rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header-bar {
+    padding: 0.3rem 0 !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  .dashboard-header-content {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    gap: 0.5rem !important;
+  }
+
+  .dashboard-cards-wrapper {
+    padding: 0 5px !important;
+  }
+
+  .dashboard-search-btn {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+

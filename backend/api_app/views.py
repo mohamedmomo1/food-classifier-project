@@ -189,25 +189,56 @@ def search_foods(request):
                 'count': 0
             }, status=status.HTTP_200_OK)
 
-        search_filter = {
-            "$or": [
-                {"name": {"$regex": f"^{query}", "$options": "i"}},
-                {"name_ar": {"$regex": query, "$options": "i"}}
-            ]
-        }
-
+        # 1. Build initial DB query filter
+        db_filter = {}
         if meal_type and meal_type != "all":
-            search_filter["meal_type"] = meal_type
+            db_filter["meal_type"] = meal_type
 
-        foods = list(food_collection.find(search_filter).limit(20))
+        # Fetch candidate foods from database to do fuzzy/regex matching
+        all_candidates = list(food_collection.find(db_filter))
 
-        for food in foods:
-            food['_id'] = str(food['_id'])
+        import difflib
+        scored_foods = []
+        query_lower = query.lower()
+
+        for food in all_candidates:
+            name_en = food.get("name", "").lower()
+            name_ar = food.get("name_ar", "").lower()
+
+            score = 0.0
+
+            # Direct/Regex matches
+            # 1. Exact match
+            if query_lower == name_en or query_lower == name_ar:
+                score = 1.0
+            # 2. Starts with (Prefix)
+            elif name_en.startswith(query_lower) or name_ar.startswith(query_lower):
+                score = 0.9
+            # 3. Substring match
+            elif query_lower in name_en or query_lower in name_ar:
+                score = 0.8
+            # 4. Fuzzy match using difflib SequenceMatcher (case-insensitive)
+            else:
+                en_ratio = difflib.SequenceMatcher(None, query_lower, name_en).ratio()
+                ar_ratio = difflib.SequenceMatcher(None, query_lower, name_ar).ratio()
+                max_ratio = max(en_ratio, ar_ratio)
+                if max_ratio >= 0.40:  # similarity threshold
+                    score = max_ratio * 0.7  # scale down fuzzy match score so exact/prefix matches rank higher
+
+            if score > 0:
+                food['_id'] = str(food['_id'])
+                scored_foods.append((score, food))
+
+        # Sort foods by score descending
+        scored_foods.sort(key=lambda x: x[0], reverse=True)
+
+        # Extract food dicts, limit to 20
+        matched_foods = [item[1] for item in scored_foods[:20]]
 
         return Response({
             'success': True,
-            'foods': foods,
-            'count': len(foods)
+            'foods': matched_foods,
+            'count': len(matched_foods)
         }, status=status.HTTP_200_OK)
 
     except Exception as e:
@@ -350,6 +381,12 @@ def log_meal(request):
         quantity = float(data.get('quantity', 1))
         meal_type = data.get('meal_type')
         meal_date = data.get('date', datetime.now().strftime("%Y-%m-%d"))
+        
+        # Get or generate meal_session_id
+        meal_session_id = data.get('meal_session_id')
+        if not meal_session_id:
+            import uuid
+            meal_session_id = f"session_{uuid.uuid4().hex}"
 
         # جلب بيانات الطعام
         food = food_collection.find_one({"_id": food_id})
@@ -360,8 +397,10 @@ def log_meal(request):
         meal_log = {
             "user_id": user_id,
             "food_id": food_id,
+            "meal_session_id": meal_session_id,
             "food_name": food.get('name', ''),
             "food_name_ar": food.get('name_ar', ''),
+            "food_image_url": food.get('image_url', '/static/food_images/default.jpg'),
             "meal_type": meal_type or food.get('meal_type', 'snack'),
             "quantity": quantity,
             "serving_unit": food.get('serving_unit', 'gram'),
@@ -405,19 +444,75 @@ def get_meal_history(request):
             end = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1)
             filter_query["date"] = {"$gte": start, "$lt": end}
 
-        meals = list(meal_logs.find(filter_query).sort("date", -1))
+        # Sort by logged_at descending so newest eating sessions are first
+        raw_meals = list(meal_logs.find(filter_query).sort("logged_at", -1))
 
-        for meal in meals:
-            meal['_id'] = str(meal['_id'])
-            meal['user_id'] = str(meal['user_id'])
-            meal['food_id'] = str(meal['food_id'])
-            meal['date'] = meal['date'].isoformat()
-            meal['logged_at'] = meal['logged_at'].isoformat()
+        # Grouping by meal_session_id or fallback
+        grouped_meals = []
+        grouped_map = {}
+
+        for meal in raw_meals:
+            session_id = meal.get('meal_session_id')
+            if not session_id:
+                # Proximity/fallback key: group by date, meal_type, and rounded logged_at to nearest 2 minutes
+                logged_at = meal.get('created_at') or meal.get('logged_at') or datetime.utcnow()
+                rounded_minute = (logged_at.minute // 2) * 2
+                time_key = logged_at.replace(minute=rounded_minute, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M")
+                session_id = f"fallback_{meal.get('meal_type', 'snack')}_{time_key}"
+
+            if session_id not in grouped_map:
+                logged_at_val = meal.get('created_at') or meal.get('logged_at') or datetime.utcnow()
+                date_val = meal.get('date') or datetime.utcnow()
+
+                # ISO formats
+                logged_at_iso = logged_at_val.isoformat() if hasattr(logged_at_val, 'isoformat') else str(logged_at_val)
+                date_iso = date_val.isoformat() if hasattr(date_val, 'isoformat') else str(date_val)
+
+                grouped_map[session_id] = {
+                    "_id": session_id,
+                    "meal_session_id": session_id,
+                    "meal_type": meal.get('meal_type', 'snack'),
+                    "date": date_iso,
+                    "logged_at": logged_at_iso,
+                    "total_calories": 0.0,
+                    "total_protein": 0.0,
+                    "total_carbs": 0.0,
+                    "total_fat": 0.0,
+                    "items": []
+                }
+                grouped_meals.append(grouped_map[session_id])
+
+            g = grouped_map[session_id]
+            g['total_calories'] = round(g['total_calories'] + meal.get('calories_consumed', 0.0), 2)
+            g['total_protein'] = round(g['total_protein'] + meal.get('protein_consumed', 0.0), 2)
+            g['total_carbs'] = round(g['total_carbs'] + meal.get('carbs_consumed', 0.0), 2)
+            g['total_fat'] = round(g['total_fat'] + meal.get('fat_consumed', 0.0), 2)
+
+            item = {
+                "_id": str(meal['_id']),
+                "user_id": str(meal.get('user_id')),
+                "food_id": str(meal.get('food_id')),
+                "food_name": meal.get('food_name', ''),
+                "food_name_ar": meal.get('food_name_ar', ''),
+                "food_image_url": meal.get('food_image_url', '/static/food_images/default.jpg'),
+                "quantity": meal.get('quantity', 1.0),
+                "serving_unit": meal.get('serving_unit', 'gram'),
+                "calories_consumed": meal.get('calories_consumed', 0.0),
+                "protein_consumed": meal.get('protein_consumed', 0.0),
+                "carbs_consumed": meal.get('carbs_consumed', 0.0),
+                "fat_consumed": meal.get('fat_consumed', 0.0),
+            }
+            g['items'].append(item)
+
+        total_meals = len(grouped_meals)
+        total_items = sum(len(g['items']) for g in grouped_meals)
 
         return Response({
             "success": True,
-            "meals": meals,
-            "count": len(meals)
+            "meals": grouped_meals,
+            "total_meals": total_meals,
+            "total_items": total_items,
+            "count": len(grouped_meals)
         }, status=status.HTTP_200_OK)
 
     except Exception as e:
@@ -562,31 +657,60 @@ def create_diet_plan(request):
     try:
         db = settings.MONGO_DB
         diet_plans = db["diet_plans"]
+        diet_plan_items = db["diet_plan_items"]
 
         coach_id = ObjectId(request.data.get('coach_id'))
+        plan_name = request.data.get('plan_name') or request.data.get('name', '')
+        description = request.data.get('description', '')
 
+        # Enforce uniqueness on plan_name
+        if diet_plans.find_one({"plan_name": plan_name}):
+            return Response({
+                "success": False,
+                "error": "اسم الخطة مستخدم بالفعل، يرجى اختيار اسم فريد"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # 1. Insert into diet_plans
         diet_plan = {
             "coach_id": coach_id,
-            "name": request.data.get('name', ''),
-            "description": request.data.get('description', ''),
-            "meals": {
-                "breakfast": request.data.get('breakfast_meals', []),
-                "lunch": request.data.get('lunch_meals', []),
-                "dinner": request.data.get('dinner_meals', []),
-                "snacks": request.data.get('snacks', [])
-            },
-            "daily_targets": request.data.get('daily_targets', {}),
-            "is_active": True,
+            "plan_name": plan_name,
+            "description": description,
             "created_at": datetime.utcnow(),
             "updated_at": datetime.utcnow()
         }
-
         result = diet_plans.insert_one(diet_plan)
+        plan_id = result.inserted_id
+
+        # 2. Insert items into diet_plan_items
+        meals_map = {
+            "breakfast": request.data.get('breakfast_meals', []),
+            "lunch": request.data.get('lunch_meals', []),
+            "dinner": request.data.get('dinner_meals', []),
+            "snack": request.data.get('snacks', [])
+        }
+
+        # Handle snacks/snack naming variations
+        if not meals_map["snack"] and request.data.get('snack_meals'):
+            meals_map["snack"] = request.data.get('snack_meals')
+
+        for meal_type, items_list in meals_map.items():
+            for item in items_list:
+                food_id_str = item.get('food_id') or item.get('_id')
+                if not food_id_str:
+                    continue
+                qty = float(item.get('quantity') or item.get('quantity_g') or 100.0)
+                diet_plan_items.insert_one({
+                    "diet_plan_id": plan_id,
+                    "food_id": ObjectId(food_id_str),
+                    "meal_type": meal_type,
+                    "quantity_g": qty,
+                    "created_at": datetime.utcnow()
+                })
 
         return Response({
             "success": True,
             "message": "تم إنشاء النظام الغذائي بنجاح",
-            "plan_id": str(result.inserted_id)
+            "plan_id": str(plan_id)
         }, status=status.HTTP_201_CREATED)
 
     except Exception as e:
@@ -595,18 +719,92 @@ def create_diet_plan(request):
 
 @api_view(['GET'])
 def get_diet_plans(request):
-    """جلب الأنظمة الغذائية للكوتش"""
+    """جلب الأنظمة الغذائية"""
     try:
         db = settings.MONGO_DB
         diet_plans = db["diet_plans"]
+        diet_plan_items = db["diet_plan_items"]
+        food_collection = db["food_database"]
 
-        coach_id = ObjectId(request.GET.get('coach_id'))
+        coach_id_str = request.GET.get('coach_id')
+        plan_name = request.GET.get('plan_name')
+        plan_id_str = request.GET.get('plan_id')
 
-        plans = list(diet_plans.find({"coach_id": coach_id}))
+        filter_query = {}
+        if coach_id_str:
+            filter_query["coach_id"] = ObjectId(coach_id_str)
+        if plan_name:
+            filter_query["plan_name"] = plan_name
+        if plan_id_str:
+            filter_query["_id"] = ObjectId(plan_id_str)
+
+        plans = list(diet_plans.find(filter_query))
 
         for plan in plans:
             plan['_id'] = str(plan['_id'])
             plan['coach_id'] = str(plan['coach_id'])
+            plan['name'] = plan.get('plan_name')
+
+            # Fetch items
+            items = list(diet_plan_items.find({"diet_plan_id": ObjectId(plan['_id'])}))
+
+            breakfast_meals = []
+            lunch_meals = []
+            dinner_meals = []
+            snacks = []
+
+            for item in items:
+                food_id = item.get('food_id')
+                food = food_collection.find_one({"_id": food_id})
+
+                food_data = {
+                    "_id": str(food_id),
+                    "food_id": str(food_id),
+                    "quantity": item.get('quantity_g', 100.0),
+                    "quantity_g": item.get('quantity_g', 100.0),
+                    "meal_type": item.get('meal_type')
+                }
+                if food:
+                    food_data.update({
+                        "name": food.get('name', ''),
+                        "name_ar": food.get('name_ar', ''),
+                        "calories": food.get('calories', 0.0),
+                        "protein": food.get('protein', 0.0),
+                        "carbs": food.get('carbs', 0.0),
+                        "fat": food.get('fat', 0.0),
+                        "serving_unit": food.get('serving_unit', 'gram'),
+                        "image_url": food.get('image_url', '')
+                    })
+
+                m_type = item.get('meal_type')
+                if m_type == 'breakfast':
+                    breakfast_meals.append(food_data)
+                elif m_type == 'lunch':
+                    lunch_meals.append(food_data)
+                elif m_type == 'dinner':
+                    dinner_meals.append(food_data)
+                else:
+                    snacks.append(food_data)
+
+            plan['meals'] = {
+                "breakfast": breakfast_meals,
+                "lunch": lunch_meals,
+                "dinner": dinner_meals,
+                "snacks": snacks
+            }
+
+            # Calculate daily targets dynamically
+            total_cals = sum(float(f.get('calories', 0)) * (float(f.get('quantity', 100)) / 100.0 if f.get('serving_unit') == 'gram' else float(f.get('quantity', 1))) for f in (breakfast_meals + lunch_meals + dinner_meals + snacks))
+            total_prot = sum(float(f.get('protein', 0)) * (float(f.get('quantity', 100)) / 100.0 if f.get('serving_unit') == 'gram' else float(f.get('quantity', 1))) for f in (breakfast_meals + lunch_meals + dinner_meals + snacks))
+            total_carb = sum(float(f.get('carbs', 0)) * (float(f.get('quantity', 100)) / 100.0 if f.get('serving_unit') == 'gram' else float(f.get('quantity', 1))) for f in (breakfast_meals + lunch_meals + dinner_meals + snacks))
+            total_fats = sum(float(f.get('fat', 0)) * (float(f.get('quantity', 100)) / 100.0 if f.get('serving_unit') == 'gram' else float(f.get('quantity', 1))) for f in (breakfast_meals + lunch_meals + dinner_meals + snacks))
+
+            plan['daily_targets'] = {
+                "calories": round(total_cals, 1),
+                "protein": round(total_prot, 1),
+                "carbs": round(total_carb, 1),
+                "fat": round(total_fats, 1)
+            }
 
         return Response({
             "success": True,
@@ -624,34 +822,58 @@ def update_diet_plan(request, plan_id):
     try:
         db = settings.MONGO_DB
         diet_plans = db["diet_plans"]
+        diet_plan_items = db["diet_plan_items"]
 
-        plan = diet_plans.find_one({"_id": ObjectId(plan_id)})
+        pid = ObjectId(plan_id)
+        plan = diet_plans.find_one({"_id": pid})
         if not plan:
             return Response({"error": "النظام الغذائي غير موجود"}, status=status.HTTP_404_NOT_FOUND)
+
+        plan_name = request.data.get('plan_name') or request.data.get('name')
+
+        # Check uniqueness of plan_name if changed
+        if plan_name and plan_name != plan.get('plan_name'):
+            if diet_plans.find_one({"plan_name": plan_name}):
+                return Response({
+                    "success": False,
+                    "error": "اسم الخطة مستخدم بالفعل، يرجى اختيار اسم فريد"
+                }, status=status.HTTP_400_BAD_REQUEST)
 
         update_data = {
             "updated_at": datetime.utcnow()
         }
-
-        if 'name' in request.data:
-            update_data['name'] = request.data.get('name')
+        if plan_name:
+            update_data['plan_name'] = plan_name
         if 'description' in request.data:
             update_data['description'] = request.data.get('description')
-        if 'breakfast_meals' in request.data:
-            update_data['meals.breakfast'] = request.data.get('breakfast_meals')
-        if 'lunch_meals' in request.data:
-            update_data['meals.lunch'] = request.data.get('lunch_meals')
-        if 'dinner_meals' in request.data:
-            update_data['meals.dinner'] = request.data.get('dinner_meals')
-        if 'snacks' in request.data:
-            update_data['meals.snacks'] = request.data.get('snacks')
-        if 'daily_targets' in request.data:
-            update_data['daily_targets'] = request.data.get('daily_targets')
 
-        diet_plans.update_one(
-            {"_id": ObjectId(plan_id)},
-            {"$set": update_data}
-        )
+        diet_plans.update_one({"_id": pid}, {"$set": update_data})
+
+        # Update items: delete and rebuild
+        has_items_update = any(k in request.data for k in ['breakfast_meals', 'lunch_meals', 'dinner_meals', 'snacks'])
+        if has_items_update:
+            diet_plan_items.delete_many({"diet_plan_id": pid})
+
+            meals_map = {
+                "breakfast": request.data.get('breakfast_meals', []),
+                "lunch": request.data.get('lunch_meals', []),
+                "dinner": request.data.get('dinner_meals', []),
+                "snack": request.data.get('snacks', [])
+            }
+
+            for meal_type, items_list in meals_map.items():
+                for item in items_list:
+                    food_id_str = item.get('food_id') or item.get('_id')
+                    if not food_id_str:
+                        continue
+                    qty = float(item.get('quantity') or item.get('quantity_g') or 100.0)
+                    diet_plan_items.insert_one({
+                        "diet_plan_id": pid,
+                        "food_id": ObjectId(food_id_str),
+                        "meal_type": meal_type,
+                        "quantity_g": qty,
+                        "created_at": datetime.utcnow()
+                    })
 
         return Response({
             "success": True,
@@ -751,6 +973,23 @@ def get_subscriptions(request):
             sub['subscriber_id'] = str(sub['subscriber_id'])
             if sub['diet_plan_id']:
                 sub['diet_plan_id'] = str(sub['diet_plan_id'])
+            
+            # Fetch subscriber user details
+            users_col = db["users"]
+            subscriber = users_col.find_one({"_id": ObjectId(sub["subscriber_id"])})
+            if subscriber:
+                sub['subscriber_name'] = subscriber.get('name', 'Unknown')
+                sub['subscriber_age'] = subscriber.get('age', 25)
+            else:
+                sub['subscriber_name'] = 'Unknown'
+                sub['subscriber_age'] = 25
+
+            # Fetch coach user details
+            coach_user = users_col.find_one({"_id": ObjectId(sub["coach_id"])})
+            if coach_user:
+                sub['coach_name'] = coach_user.get('name', 'Unknown')
+            else:
+                sub['coach_name'] = 'Unknown'
 
         return Response({
             "success": True,
@@ -839,11 +1078,28 @@ def get_subscriber_meal_history(request, subscriber_id):
         }
 
         for meal in meals:
-            meal['_id'] = str(meal['_id'])
-            meal_type = meal['meal_type']
+            meal_data = {
+                "_id": str(meal['_id']),
+                "user_id": str(meal.get('user_id', '')),
+                "food_id": str(meal.get('food_id', '')),
+                "food_name": meal.get('food_name', ''),
+                "food_name_ar": meal.get('food_name_ar', ''),
+                "food_image_url": meal.get('food_image_url', '/static/food_images/default.jpg'),
+                "meal_type": meal.get('meal_type', ''),
+                "quantity": meal.get('quantity', 1.0),
+                "serving_unit": meal.get('serving_unit', 'gram'),
+                "calories_consumed": meal.get('calories_consumed', 0.0),
+                "protein_consumed": meal.get('protein_consumed', 0.0),
+                "carbs_consumed": meal.get('carbs_consumed', 0.0),
+                "fat_consumed": meal.get('fat_consumed', 0.0),
+                "date": meal.get('date').isoformat() if hasattr(meal.get('date'), 'isoformat') else str(meal.get('date')),
+                "logged_at": meal.get('logged_at').isoformat() if hasattr(meal.get('logged_at'), 'isoformat') else str(meal.get('logged_at')),
+                "created_at": meal.get('created_at').isoformat() if hasattr(meal.get('created_at'), 'isoformat') else str(meal.get('created_at')),
+            }
+            meal_type = meal_data['meal_type']
             if meal_type in by_meal_type:
-                by_meal_type[meal_type]['meals'].append(meal)
-                by_meal_type[meal_type]['total_calories'] += meal['calories_consumed']
+                by_meal_type[meal_type]['meals'].append(meal_data)
+                by_meal_type[meal_type]['total_calories'] += meal_data['calories_consumed']
 
         return Response({
             "success": True,
@@ -858,3 +1114,32 @@ def get_subscriber_meal_history(request, subscriber_id):
 
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['DELETE'])
+def delete_subscription(request, subscriber_id):
+    """إلغاء الاشتراك للكوتش"""
+    try:
+        db = settings.MONGO_DB
+        subscriptions = db["coach_subscriptions"]
+        users = db["users"]
+
+        sub_id = ObjectId(subscriber_id)
+
+        # Delete from coach_subscriptions
+        subscriptions.delete_many({"subscriber_id": sub_id})
+
+        # Unset coach_id in users collection
+        users.update_one(
+            {"_id": sub_id},
+            {"$unset": {"coach_id": ""}}
+        )
+
+        return Response({
+            "success": True,
+            "message": "تم إلغاء الاشتراك بنجاح"
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

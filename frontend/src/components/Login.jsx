@@ -3,11 +3,13 @@ import { Box, TextField, Button, Typography, Paper, Container } from '@mui/mater
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useToast } from '../context/ToastContext';
 import axios from 'axios';
 
 export default function Login() {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
+  const toast = useToast();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
 
@@ -19,10 +21,11 @@ export default function Login() {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/login/', formData);
+      const response = await axios.post('http://localhost:8000/api/login/', formData);
       if (response.data.success) {
         localStorage.setItem('befit_user', JSON.stringify(response.data.user));
         localStorage.setItem('befit_token', response.data.token);
+        toast.success(t('auth.loginSuccess'));
         navigate('/dashboard');
       }
     } catch (err) {
@@ -32,7 +35,9 @@ export default function Login() {
 
   return (
     <Box dir={language === 'ar' ? 'rtl' : 'ltr'} sx={{
-      minHeight: '100vh',
+      width: '100%',
+      boxSizing: 'border-box',
+      minHeight: '80vh',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

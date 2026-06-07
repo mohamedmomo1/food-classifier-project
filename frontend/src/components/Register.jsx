@@ -3,11 +3,13 @@ import { Box, TextField, Button, Typography, MenuItem, Paper, Container } from '
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useToast } from '../context/ToastContext';
 import axios from 'axios';
 
 export default function Register() {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -29,9 +31,9 @@ export default function Register() {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/register/', formData);
+      const response = await axios.post('http://localhost:8000/api/register/', formData);
       if (response.data.success) {
-        alert(t('auth.registerSuccess'));
+        toast.success(t('auth.registerSuccess'), 4000);
         navigate('/login');
       }
     } catch (err) {
@@ -41,7 +43,9 @@ export default function Register() {
 
   return (
     <Box dir={language === 'ar' ? 'rtl' : 'ltr'} sx={{
-      minHeight: '100vh',
+      width: '100%',
+      boxSizing: 'border-box',
+      minHeight: '80vh',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

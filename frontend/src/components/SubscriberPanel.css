@@ -4,21 +4,30 @@
 
 .subscriber-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  padding: 1.2rem 0;
+  overflow: visible;
 }
 
-.subscriber-header h1 {
+.subscriber-header .header-title {
   font-size: 2.5rem;
-  margin: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+  padding-bottom: 0.3rem;
+  font-weight: 700;
+  display: block;
+  overflow: visible;
+  color: var(--text-h);
 }
 
-.subscriber-header p {
+.subscriber-header .header-subtitle {
   color: var(--text);
-  margin-top: 0.5rem;
+  margin: 0;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  padding-top: 0.5rem;
+  display: block;
+  overflow: visible;
 }
 
 /* Coach Info Card */
@@ -404,7 +413,7 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .subscriber-header h1 {
+  .subscriber-header .header-title {
     font-size: 2rem;
   }
 
@@ -436,7 +445,7 @@
 }
 
 @media (max-width: 480px) {
-  .subscriber-header h1 {
+  .subscriber-header .header-title {
     font-size: 1.5rem;
   }
 

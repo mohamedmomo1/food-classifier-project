@@ -28,5 +28,6 @@ urlpatterns = [
     path('subscriptions/', views.create_subscription, name='create_subscription'),
     path('subscriptions/list/', views.get_subscriptions, name='get_subscriptions'),
     path('subscriptions/<str:subscription_id>/', views.update_subscription, name='update_subscription'),
+    path('subscriptions/<str:subscriber_id>/cancel/', views.delete_subscription, name='cancel_subscription'),
     path('subscriptions/<str:subscriber_id>/history/', views.get_subscriber_meal_history, name='subscriber_history'),
 ]

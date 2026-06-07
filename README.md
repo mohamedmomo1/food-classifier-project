@@ -223,6 +223,7 @@ coach_subscriptions - العلاقات الكوتش-مشترك
 
 ## 📖 التوثيق الإضافية
 
+- 📄 [DIAGRAMS.md](./DIAGRAMS.md) - الرسوم التخطيطية وهيكل النظام (Architecture, ERD, User Flows)
 - 📄 [DB_SCHEMA_PLAN.md](./DB_SCHEMA_PLAN.md) - خطة قاعدة البيانات
 - 📄 [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) - توثيق الـ APIs
 - 📄 [FRONTEND_DOCUMENTATION.md](./FRONTEND_DOCUMENTATION.md) - توثيق Frontend

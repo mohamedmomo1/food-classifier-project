@@ -3,6 +3,7 @@ import { Box, Container, Typography, Paper, Button, Grid, Card, CardMedia, Circu
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useToast } from '../context/ToastContext';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -25,6 +26,7 @@ const localFoodDatabase = [
 export default function FoodClassifier() {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
+  const toast = useToast();
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
@@ -59,7 +61,7 @@ export default function FoodClassifier() {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch (err) {
-      alert(language === 'ar' ? 'عذرًا، فشل فتح الكاميرا.' : 'Failed to access camera.');
+      toast.error(language === 'ar' ? 'عذرًا، فشل فتح الكاميرا.' : 'Failed to access camera.');
       setCameraActive(false);
     }
   };
@@ -101,7 +103,7 @@ export default function FoodClassifier() {
       const blob = await responseBlob.blob();
       formData.append('image', blob, 'food_image.jpg');
 
-      const response = await axios.post('http://127.0.0.1:8000/api/predict-food/', formData, {
+      const response = await axios.post('http://localhost:8000/api/foods/predict/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -115,11 +117,11 @@ export default function FoodClassifier() {
         }));
         setMealItems([...mealItems, ...detectedItems]);
       } else {
-        alert(language === 'ar' ? 'لم يتعرف الموديل على أصناف طعام.' : 'No food items detected.');
+        toast.warning(language === 'ar' ? 'لم يتعرف الموديل على أصناف طعام.' : 'No food items detected.');
       }
     } catch (error) {
       console.error("AI Scan Error:", error);
-      alert(language === 'ar' ? 'حدث خطأ أثناء الاتصال بسيرفر الـ AI. تم تشغيل الوضع الاحتياطي!' : 'Error connecting to AI server.');
+      toast.error(language === 'ar' ? 'حدث خطأ أثناء الاتصال بسيرفر الـ AI. تم تشغيل الوضع الاحتياطي!' : 'Error connecting to AI server.');
 
       const fallbackItems = [
         { id: Date.now(), name: language === 'ar' ? 'فراخ مشوية' : 'Grilled Chicken', serving_unit: 'gram', calories: 1.65, quantity: 100 }
@@ -163,7 +165,7 @@ export default function FoodClassifier() {
   };
 
   const handleFinalSubmit = () => {
-    alert(language === 'ar' ? `تم بنجاح إضافة الوجبة بإجمالي سعرات: ${calculateTotalCalories()} Cal` : `Meal added with total: ${calculateTotalCalories()} Cal`);
+    toast.success(language === 'ar' ? `تم بنجاح إضافة الوجبة بإجمالي سعرات: ${calculateTotalCalories()} Cal` : `Meal added! Total: ${calculateTotalCalories()} Cal`);
     navigate('/dashboard');
   };
 
@@ -181,7 +183,7 @@ export default function FoodClassifier() {
         <Paper elevation={3} sx={{ p: 2, mb: 4, background: 'rgba(255, 255, 255, 0.9)', borderRadius: 3 }}>
           <Autocomplete
             options={localFoodDatabase}
-            getOptionLabel={(option) => language === 'ar' ? `${option.name_ar}` : `${option.name_en}`}
+            getOptionLabel={(option) => `${option.name_ar} - ${option.name_en}`}
             onChange={handleAddManualFood}
             renderInput={(params) => <TextField {...params} label={language === 'ar' ? 'ابحث عن أكلة يدويًا...' : 'Search food manually...'} variant="outlined" fullWidth />}
           />

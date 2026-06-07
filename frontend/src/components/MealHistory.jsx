@@ -1,26 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useToast } from '../context/ToastContext';
 import './MealHistory.css';
 
 const API_BASE_URL = 'http://localhost:8000/api';
 
 export default function MealHistory() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const toast = useToast();
   const [period, setPeriod] = useState('daily');
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0]
   );
   const [mealType, setMealType] = useState('all');
   const [summary, setSummary] = useState(null);
-  const [meals, setMeals] = useState({});
+  const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [mealsByType, setMealsByType] = useState({
-    breakfast: { meals: [], total_calories: 0 },
-    lunch: { meals: [], total_calories: 0 },
-    dinner: { meals: [], total_calories: 0 },
-    snack: { meals: [], total_calories: 0 },
-  });
 
   const user = JSON.parse(localStorage.getItem('befit_user') || '{}');
 
@@ -113,51 +109,53 @@ export default function MealHistory() {
       const data = await response.json();
 
       if (data.success) {
-        // تنظيم الوجبات حسب النوع
-        const grouped = {
-          breakfast: { meals: [], total_calories: 0 },
-          lunch: { meals: [], total_calories: 0 },
-          dinner: { meals: [], total_calories: 0 },
-          snack: { meals: [], total_calories: 0 },
-        };
-
-        data.meals.forEach((meal) => {
-          const mealTypeKey = meal.meal_type || 'snack';
-          if (grouped[mealTypeKey]) {
-            grouped[mealTypeKey].meals.push(meal);
-            grouped[mealTypeKey].total_calories += meal.calories_consumed;
-          }
-        });
-
-        setMealsByType(grouped);
-        setMeals(data.meals);
+        setMeals(data.meals || []);
       }
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleDeleteMeal = async (mealId) => {
-    if (!window.confirm(t('meal.deleteConfirm'))) return;
+  const handleDeleteMeal = (mealId) => {
+    toast.confirm(
+      t('meal.deleteConfirm'),
+      async () => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/meals/${mealId}/`, {
+            method: 'DELETE',
+          });
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/meals/${mealId}/`, {
-        method: 'DELETE',
-      });
+          const data = await response.json();
 
-      const data = await response.json();
-
-      if (data.success) {
-        alert(t('meal.deletedSuccessfully'));
-        fetchSummary();
-        fetchMealsByType();
-      } else {
-        setError(data.error || t('general.error'));
+          if (data.success) {
+            toast.success(t('meal.deletedSuccessfully'));
+            fetchSummary();
+            fetchMealsByType();
+          } else {
+            toast.error(data.error || t('general.error'));
+          }
+        } catch (err) {
+          toast.error(t('general.error'));
+          console.error(err);
+        }
       }
-    } catch (err) {
-      setError(t('general.error'));
-      console.error(err);
+    );
+  };
+
+  const translateServingUnit = (unit) => {
+    if (language === 'ar') {
+      const mapping = {
+        'piece': 'حبة',
+        'gram': 'جرام',
+        'slice': 'شريحة',
+        'cup': 'كوب',
+        'ml': 'مللي',
+        'loaf': 'رغيف',
+        'tablespoon': 'ملعقة كبيرة'
+      };
+      return mapping[unit?.toLowerCase()] || unit;
     }
+    return unit;
   };
 
   const getMealTypeLabel = (type) => {
@@ -173,8 +171,8 @@ export default function MealHistory() {
   return (
     <div className="meal-history-container">
       <div className="history-header">
-        <h1>سجل الوجبات</h1>
-        <p>تابع وجباتك اليومية وتحكم في ماكروز التغذية</p>
+        <h1>{language === 'ar' ? 'سجل الوجبات' : 'Meal History'}</h1>
+        <p>{language === 'ar' ? 'تابع وجباتك اليومية وتحكم في ماكروز التغذية' : 'Track your daily meals and manage your nutrition macros'}</p>
       </div>
 
       {/* Filters */}
@@ -258,73 +256,147 @@ export default function MealHistory() {
             </div>
           </div>
 
-          <div className="meals-count">
-            📊 {t('history.mealCount')}: <strong>{summary.meal_count}</strong>
+          <div className="stats-subgrid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '1rem',
+            marginTop: '1.5rem',
+          }}>
+            <div className="summary-card" style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            }}>
+              <div className="label">{language === 'ar' ? 'عدد الوجبات' : 'Total Meals'}</div>
+              <div className="value">{meals.length}</div>
+            </div>
+            <div className="summary-card" style={{
+              background: 'linear-gradient(135deg, #10ac84 0%, #086b51 100%)',
+            }}>
+              <div className="label">{language === 'ar' ? 'عدد الأصناف' : 'Total Items'}</div>
+              <div className="value">{meals.reduce((sum, m) => sum + (m.items?.length || 0), 0)}</div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Meals by Type */}
+      {/* Grouped Eating Sessions List */}
       <div className="meals-section">
-        <h2>الوجبات حسب النوع</h2>
+        <h2>{language === 'ar' ? 'تفاصيل الوجبات المستقلة' : 'Independent Meal Details'}</h2>
 
-        {Object.entries(mealsByType).map(([type, data]) => (
-          <div key={type} className="meal-type-group">
-            <div className="meal-type-header">
-              <h3>
-                {getMealTypeLabel(type)}
-                <span className="meal-count">({data.meals.length})</span>
-              </h3>
-              <div className="type-calories">
-                {data.total_calories.toFixed(0)} كيلوكالوري
-              </div>
-            </div>
+        {meals.filter(m => mealType === 'all' || m.meal_type === mealType).length > 0 ? (
+          <div className="meal-cards-list" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '20px' }}>
+            {meals.filter(m => mealType === 'all' || m.meal_type === mealType).map((session) => {
+              const loggedDate = new Date(session.logged_at);
+              const timeStr = loggedDate.toLocaleTimeString(language === 'ar' ? 'ar-EG' : 'en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+              });
+              const dateStr = loggedDate.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              });
 
-            {data.meals.length > 0 ? (
-              <div className="meals-list">
-                {data.meals.map((meal) => (
-                  <div key={meal._id} className="meal-item">
-                    <div className="meal-main">
-                      <div className="meal-name">{meal.food_name_ar || meal.food_name}</div>
-                      <div className="meal-quantity">
-                        {meal.quantity} {meal.serving_unit}
-                      </div>
+              return (
+                <div key={session.meal_session_id} className="meal-type-section" style={{ marginBottom: 0 }}>
+                  {/* Card Header */}
+                  <div className="meal-type-header">
+                    <h3>
+                      <span className={`meal-tag ${session.meal_type}`} style={{
+                        padding: '0.3rem 0.8rem',
+                        borderRadius: '20px',
+                        fontSize: '0.8rem',
+                        fontWeight: 'bold',
+                        color: 'white',
+                        background: session.meal_type === 'breakfast' ? '#ff6b6b' : 
+                                    session.meal_type === 'lunch' ? '#4ecdc4' : 
+                                    session.meal_type === 'dinner' ? '#ffa500' : '#38ada9',
+                      }}>
+                        {getMealTypeLabel(session.meal_type)}
+                      </span>
+                      <span className="meal-count" style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 'normal' }}>
+                        📅 {dateStr} • ⏰ {timeStr}
+                      </span>
+                    </h3>
+                    <div className="type-calories">
+                      {session.total_calories.toFixed(0)} {language === 'ar' ? 'سعرة' : 'kcal'}
                     </div>
-
-                    <div className="meal-macros-compact">
-                      <span className="macro-item">
-                        🔥 {meal.calories_consumed.toFixed(0)}
-                      </span>
-                      <span className="macro-item">
-                        🥚 {meal.protein_consumed.toFixed(1)}g
-                      </span>
-                      <span className="macro-item">
-                        🌾 {meal.carbs_consumed.toFixed(1)}g
-                      </span>
-                      <span className="macro-item">
-                        🧈 {meal.fat_consumed.toFixed(1)}g
-                      </span>
-                    </div>
-
-                    <button
-                      className="delete-meal-btn"
-                      onClick={() => handleDeleteMeal(meal._id)}
-                      title={t('meal.delete')}
-                    >
-                      🗑️
-                    </button>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="no-meals">لا توجد وجبات {getMealTypeLabel(type)}</div>
-            )}
-          </div>
-        ))}
 
-        {Object.values(mealsByType).every((m) => m.meals.length === 0) && (
-          <div className="empty-state">
-            <p>📭 {t('history.noMeals')}</p>
+                  {/* Food Items list in this meal */}
+                  <div className="meals-list">
+                    {session.items.map((item) => (
+                      <div key={item._id} className="meal-item" style={{ 
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        borderInlineStartColor: session.meal_type === 'breakfast' ? '#ff6b6b' : 
+                                                session.meal_type === 'lunch' ? '#4ecdc4' : 
+                                                session.meal_type === 'dinner' ? '#ffa500' : '#38ada9' 
+                      }}>
+                        <img 
+                          src={item.food_image_url || `/static/food_images/${(item.food_name || '').toLowerCase().replace(/\s+/g, '_')}.jpg`} 
+                          alt={item.food_name_ar || item.food_name} 
+                          style={{ width: '45px', height: '45px', borderRadius: '6px', objectFit: 'cover', flexShrink: 0 }}
+                          onError={(e) => { e.target.src = '/static/food_images/default.jpg'; }}
+                        />
+                        <div className="meal-main" style={{ flex: 1 }}>
+                          <div className="meal-name">
+                            {language === 'ar' ? (item.food_name_ar || item.food_name) : (item.food_name || item.food_name_ar)}
+                          </div>
+                          <div className="meal-quantity">
+                            ⚖️ {item.quantity} {translateServingUnit(item.serving_unit)}
+                          </div>
+                        </div>
+
+                        <div className="meal-macros-compact">
+                          <span className="macro-item calories-macro">🔥 {item.calories_consumed.toFixed(0)}</span>
+                          <span className="macro-item protein-macro">🥚 {item.protein_consumed.toFixed(1)}g</span>
+                          <span className="macro-item carbs-macro">🌾 {item.carbs_consumed.toFixed(1)}g</span>
+                          <span className="macro-item fat-macro">🧈 {item.fat_consumed.toFixed(1)}g</span>
+                        </div>
+
+                        <button
+                          className="delete-meal-btn"
+                          onClick={() => handleDeleteMeal(item._id)}
+                          title={t('meal.delete')}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Macros totals for this specific card */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-around',
+                    background: 'var(--code-bg)',
+                    padding: '1rem',
+                    borderTop: '2px solid var(--border)',
+                    fontSize: '0.9rem',
+                    fontWeight: '600'
+                  }}>
+                    <span style={{ color: '#4ecdc4' }}>🥚 {language === 'ar' ? 'بروتين' : 'Protein'}: {session.total_protein.toFixed(1)}g</span>
+                    <span style={{ color: '#ffa500' }}>🌾 {language === 'ar' ? 'كربوهيدرات' : 'Carbs'}: {session.total_carbs.toFixed(1)}g</span>
+                    <span style={{ color: '#38ada9' }}>🧈 {language === 'ar' ? 'دهون' : 'Fat'}: {session.total_fat.toFixed(1)}g</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="empty-state" style={{
+            background: 'var(--code-bg)',
+            borderRadius: '12px',
+            border: '2px solid var(--border)',
+            padding: '40px',
+            textAlign: 'center',
+            marginTop: '20px'
+          }}>
+            <p style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text)' }}>
+              📭 {t('history.noMeals')}
+            </p>
           </div>
         )}
       </div>

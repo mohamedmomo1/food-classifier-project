@@ -5,6 +5,7 @@ import Footer from './components/Footer.jsx';
 import Register from './components/Register.jsx';
 import Login from './components/Login.jsx';
 import Dashboard from './components/Dashboard.jsx';
+import SmartScanner from './components/SmartScanner.jsx';
 import FoodClassifier from './components/FoodClassifier.jsx';
 import FoodSearch from './components/FoodSearch.jsx';
 import MealHistory from './components/MealHistory.jsx';
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/smart-scanner" element={<SmartScanner />} />
           <Route path="/classifier" element={<FoodClassifier />} />
           <Route path="/search" element={<FoodSearch />} />
           <Route path="/history" element={<MealHistory />} />

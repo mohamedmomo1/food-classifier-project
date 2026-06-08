@@ -1,0 +1,75 @@
+[{
+  "_id": {
+    "$oid": "6a22c3cc252ea831716d871f"
+  },
+  "coach_id": {
+    "$oid": "6a22c3cc252ea831716d871c"
+  },
+  "subscriber_id": {
+    "$oid": "6a22c3cc252ea831716d871e"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22c3cc252ea831716d871d"
+  },
+  "status": "active",
+  "start_date": {
+    "$date": "2026-06-05T12:40:44.910Z"
+  },
+  "end_date": null,
+  "created_at": {
+    "$date": "2026-06-05T12:40:44.910Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:40:44.910Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a25b9197a2237c2ab226b32"
+  },
+  "coach_id": {
+    "$oid": "6a22c3cc252ea831716d871c"
+  },
+  "subscriber_id": {
+    "$oid": "6a22c23c252ea831716d8629"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22c3cc252ea831716d871d"
+  },
+  "status": "active",
+  "start_date": {
+    "$date": "2026-06-07T18:31:53.393Z"
+  },
+  "end_date": null,
+  "created_at": {
+    "$date": "2026-06-07T18:31:53.393Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-07T18:31:53.393Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a25bb367a2237c2ab226b33"
+  },
+  "coach_id": {
+    "$oid": "6a22791532a3db4e7d2044ae"
+  },
+  "subscriber_id": {
+    "$oid": "6a22791532a3db4e7d2044bb"
+  },
+  "diet_plan_id": {
+    "$oid": "6a227dd2aa7e7c4b807c74d9"
+  },
+  "status": "active",
+  "start_date": {
+    "$date": "2026-06-07T18:40:54.973Z"
+  },
+  "end_date": null,
+  "created_at": {
+    "$date": "2026-06-07T18:40:54.973Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-07T18:40:54.973Z"
+  }
+}]

@@ -1,0 +1,176 @@
+[{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74da"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d20446d"
+  },
+  "meal_type": "breakfast",
+  "quantity_g": 3,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.028Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74db"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d204470"
+  },
+  "meal_type": "breakfast",
+  "quantity_g": 1.5,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.029Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74dc"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d204474"
+  },
+  "meal_type": "breakfast",
+  "quantity_g": 1,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.029Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74dd"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d204479"
+  },
+  "meal_type": "lunch",
+  "quantity_g": 250,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.029Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74de"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d20446c"
+  },
+  "meal_type": "lunch",
+  "quantity_g": 350,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.030Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74df"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d204478"
+  },
+  "meal_type": "lunch",
+  "quantity_g": 200,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.030Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74e0"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d204488"
+  },
+  "meal_type": "dinner",
+  "quantity_g": 100200,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.030Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74e1"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d204471"
+  },
+  "meal_type": "dinner",
+  "quantity_g": 1,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.031Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74e2"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d20448a"
+  },
+  "meal_type": "dinner",
+  "quantity_g": 1,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.031Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74e3"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d20448d"
+  },
+  "meal_type": "snack",
+  "quantity_g": 2,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.032Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227efaaa7e7c4b807c74e4"
+  },
+  "diet_plan_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "food_id": {
+    "$oid": "6a22791532a3db4e7d204490"
+  },
+  "meal_type": "snack",
+  "quantity_g": 1,
+  "created_at": {
+    "$date": "2026-06-05T07:47:06.032Z"
+  }
+}]

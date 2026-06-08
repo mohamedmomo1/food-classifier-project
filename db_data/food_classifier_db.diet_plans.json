@@ -1,0 +1,62 @@
+[{
+  "_id": {
+    "$oid": "6a22791532a3db4e7d2044af"
+  },
+  "coach_id": {
+    "$oid": "6a22791532a3db4e7d2044ae"
+  },
+  "plan_name": "خطة التضخيم للأبطال",
+  "description": "نظام غذائي متكامل عالي البروتين لتضخيم العضلات وزيادة القوة البدنية مصمم بواسطة الكوتش بيج رامي.",
+  "created_at": {
+    "$date": "2026-06-05T07:21:57.691Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T07:47:06.023Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a227dd2aa7e7c4b807c74d9"
+  },
+  "coach_id": {
+    "$oid": "6a22791532a3db4e7d2044ae"
+  },
+  "plan_name": "Bulk Plan",
+  "description": "High protein bulk plan",
+  "created_at": {
+    "$date": "2026-06-05T07:42:10.737Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T07:42:10.737Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c3cc252ea831716d871d"
+  },
+  "coach_id": {
+    "$oid": "6a22c3cc252ea831716d871c"
+  },
+  "name": "كابتن بيج رامي",
+  "description": "خطة تدريبية وتغذية مخصصة من كابتن بيج رامي",
+  "meals": {
+    "breakfast": [],
+    "lunch": [],
+    "dinner": [],
+    "snacks": []
+  },
+  "daily_targets": {
+    "calories": 3000,
+    "protein": 170,
+    "carbs": 300,
+    "fat": 100
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-06-05T12:40:44.679Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-07T00:16:18.227Z"
+  },
+  "plan_name": "Big Ramy Plan"
+}]

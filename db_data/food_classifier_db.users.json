@@ -1,0 +1,339 @@
+[{
+  "_id": {
+    "$oid": "6a22791532a3db4e7d2044ae"
+  },
+  "name": "Big Ramy",
+  "email": "coach.ramy@befit.com",
+  "password_hash": "$2b$12$X1SPIBd59rQAnJUZA9JOiusUVFklN1QTbA3hbVtQijnXyahDlkq4.",
+  "age": 41,
+  "gender": "male",
+  "weight_kg": 130,
+  "height_cm": 180,
+  "activity_level": "active",
+  "user_type": "coach",
+  "targets": {
+    "daily_calories": 4000,
+    "protein_g": 300,
+    "carbs_g": 400,
+    "fat_g": 100
+  },
+  "created_at": {
+    "$date": "2026-06-05T07:21:57.690Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T07:21:57.690Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22791532a3db4e7d2044bb"
+  },
+  "name": "Mostafa Karam",
+  "email": "user.mostafa@befit.com",
+  "password_hash": "$2b$12$X1SPIBd59rQAnJUZA9JOiusUVFklN1QTbA3hbVtQijnXyahDlkq4.",
+  "age": 25,
+  "gender": "male",
+  "weight_kg": 80,
+  "height_cm": 178,
+  "activity_level": "moderate",
+  "user_type": "subscriber",
+  "targets": {
+    "daily_calories": 2800,
+    "protein_g": 160,
+    "carbs_g": 320,
+    "fat_g": 80
+  },
+  "created_at": {
+    "$date": "2026-04-06T07:21:57.695Z"
+  },
+  "updated_at": {
+    "$date": "2026-04-06T07:21:57.695Z"
+  },
+  "coach_id": {
+    "$oid": "6a22791532a3db4e7d2044ae"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22bef2252ea831716d8622"
+  },
+  "name": "Test User",
+  "email": "testuser@gmail.com",
+  "password_hash": "$2b$12$UspBa3bmOLtAxLS8/qitruyNauyPv2YTe6l0PUHK9WISMWyHiV5sG",
+  "age": 25,
+  "gender": "male",
+  "weight_kg": 70,
+  "height_cm": 175,
+  "activity_level": "moderate",
+  "user_type": "subscriber",
+  "targets": {
+    "daily_calories": 2594,
+    "protein_g": 140,
+    "carbs_g": 346,
+    "fat_g": 72
+  },
+  "language": "ar",
+  "coach_id": null,
+  "created_at": {
+    "$date": "2026-06-05T12:20:02.868Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:20:02.868Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22bfda252ea831716d8623"
+  },
+  "name": "Test Subscriber",
+  "email": "test.sub@example.com",
+  "password_hash": "$2b$12$hjxuYjDf6.3kwztSSZZYlOKJMBS786Ewg717hO44fPV.2NJ/4.i4u",
+  "age": 25,
+  "gender": "male",
+  "weight_kg": 75,
+  "height_cm": 180,
+  "activity_level": "moderate",
+  "user_type": "subscriber",
+  "targets": {
+    "daily_calories": 2720,
+    "protein_g": 150,
+    "carbs_g": 360,
+    "fat_g": 76
+  },
+  "language": "ar",
+  "coach_id": null,
+  "created_at": {
+    "$date": "2026-06-05T12:23:54.822Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:23:54.822Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c055252ea831716d8624"
+  },
+  "name": "Test Coach",
+  "email": "test.coach@example.com",
+  "password_hash": "$2b$12$ql2Bg.GwI9ypLpdpShHTf.OERon0O7TS8SnurwnmMp6BlnNmEDJAa",
+  "age": 35,
+  "gender": "male",
+  "weight_kg": 90,
+  "height_cm": 185,
+  "activity_level": "moderate",
+  "user_type": "coach",
+  "targets": {
+    "daily_calories": 2924,
+    "protein_g": 180,
+    "carbs_g": 368,
+    "fat_g": 81
+  },
+  "language": "ar",
+  "coach_id": null,
+  "created_at": {
+    "$date": "2026-06-05T12:25:57.425Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:25:57.425Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c187252ea831716d8625"
+  },
+  "name": "Test Coach",
+  "email": "unique.coach.123@example.com",
+  "password_hash": "$2b$12$lZ1V3uJGsT60qvQS2k3TWOhqgiFc7eyFdceTPhhL5dutgx3TmGBoy",
+  "age": 35,
+  "gender": "male",
+  "weight_kg": 90,
+  "height_cm": 185,
+  "activity_level": "moderate",
+  "user_type": "coach",
+  "targets": {
+    "daily_calories": 2924,
+    "protein_g": 180,
+    "carbs_g": 368,
+    "fat_g": 81
+  },
+  "language": "ar",
+  "coach_id": null,
+  "created_at": {
+    "$date": "2026-06-05T12:31:03.936Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:31:03.936Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c1fd252ea831716d8626"
+  },
+  "name": "Test Subscriber",
+  "email": "unique.sub.123@example.com",
+  "password_hash": "$2b$12$T46cD7hcKmc4JWXaBKEMA.uaPtr6xZmtfBVGhK54M.XTUmQllKXSS",
+  "age": 25,
+  "gender": "male",
+  "weight_kg": 70,
+  "height_cm": 175,
+  "activity_level": "moderate",
+  "user_type": "subscriber",
+  "targets": {
+    "daily_calories": 2594,
+    "protein_g": 140,
+    "carbs_g": 346,
+    "fat_g": 72
+  },
+  "language": "ar",
+  "coach_id": null,
+  "created_at": {
+    "$date": "2026-06-05T12:33:01.116Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:33:01.116Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c23c252ea831716d8629"
+  },
+  "name": "Mustafa Karam",
+  "email": "mustafa_karam@befit.com",
+  "password_hash": "$2b$12$Ga42gl/NiqF8PKDqlpAk0eq6FNGp9YZqY.crXnxjNkpeim.NNm77G",
+  "age": 28,
+  "gender": "male",
+  "weight_kg": 90,
+  "height_cm": 175,
+  "activity_level": "moderate",
+  "user_type": "subscriber",
+  "targets": {
+    "daily_calories": 2500,
+    "protein_g": 125,
+    "carbs_g": 300,
+    "fat_g": 80
+  },
+  "language": "ar",
+  "created_at": {
+    "$date": "2026-06-05T12:34:04.946Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:34:04.946Z"
+  },
+  "coach_id": {
+    "$oid": "6a22c3cc252ea831716d871c"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c307252ea831716d871b"
+  },
+  "name": "Test Coach",
+  "email": "coach@test.com",
+  "password_hash": "$2b$12$nLBJc0qVXpIoJvbdAd/ItuP0ITdKC6fUHwuI6YBnVBJ9hF0ue1B4i",
+  "age": 30,
+  "gender": "male",
+  "weight_kg": 80,
+  "height_cm": 180,
+  "activity_level": "moderate",
+  "user_type": "coach",
+  "targets": {
+    "daily_calories": 2759,
+    "protein_g": 160,
+    "carbs_g": 357,
+    "fat_g": 77
+  },
+  "language": "ar",
+  "coach_id": null,
+  "created_at": {
+    "$date": "2026-06-05T12:37:27.134Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:37:27.134Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c3cc252ea831716d871c"
+  },
+  "name": "كابتن بيج رامي",
+  "email": "coach_big_ramy@befit.com",
+  "password_hash": "$2b$12$c32Z1qdlyDuyxOh9fOfgy.KyCdchx0Qd.glv0vePDo3EnyqpiRyrC",
+  "age": 35,
+  "gender": "male",
+  "weight_kg": 85,
+  "height_cm": 180,
+  "activity_level": "active",
+  "user_type": "coach",
+  "targets": {
+    "daily_calories": 3000,
+    "protein_g": 170,
+    "carbs_g": 300,
+    "fat_g": 100
+  },
+  "language": "ar",
+  "coach_id": null,
+  "created_at": {
+    "$date": "2026-06-05T12:40:44.678Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:40:44.678Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c3cc252ea831716d871e"
+  },
+  "name": "Mustafa Karam",
+  "email": "mustafa_karam@befit.com",
+  "password_hash": "$2b$12$XwNPs/CQfSt//n6t2rgNAO55htc.eYqqQPrtp/mh19v7ldSzZ1JYy",
+  "age": 28,
+  "gender": "male",
+  "weight_kg": 90,
+  "height_cm": 175,
+  "activity_level": "moderate",
+  "user_type": "subscriber",
+  "targets": {
+    "daily_calories": 2500,
+    "protein_g": 125,
+    "carbs_g": 300,
+    "fat_g": 80
+  },
+  "language": "ar",
+  "coach_id": {
+    "$oid": "6a22c3cc252ea831716d871c"
+  },
+  "created_at": {
+    "$date": "2026-06-05T12:40:44.908Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:40:44.908Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c620252ea831716d8810"
+  },
+  "name": "Test User",
+  "email": "testuser@example.com",
+  "password_hash": "$2b$12$UxDrZcuF3CY5nhpLvsYa2OfS780nwz2Zm5q6LU.3Xzw.P7vAVvJim",
+  "age": 25,
+  "gender": "male",
+  "weight_kg": 70,
+  "height_cm": 175,
+  "activity_level": "moderate",
+  "user_type": "subscriber",
+  "targets": {
+    "daily_calories": 2594,
+    "protein_g": 140,
+    "carbs_g": 346,
+    "fat_g": 72
+  },
+  "language": "ar",
+  "coach_id": null,
+  "created_at": {
+    "$date": "2026-06-05T12:50:40.386Z"
+  },
+  "updated_at": {
+    "$date": "2026-06-05T12:50:40.386Z"
+  }
+}]

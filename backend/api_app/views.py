@@ -13,11 +13,18 @@ from PIL import Image
 from calendar import monthrange
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL_PATH = r"C:\final_gp_pro\ai_model\weights\best_fixed_konafa.pt"
+
+# Check if running in Docker container with mounted volume, otherwise use relative path fallback
+if os.path.exists("/ai_model/weights/best_fixed_konafa.pt"):
+    MODEL_PATH = "/ai_model/weights/best_fixed_konafa.pt"
+else:
+    MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "ai_model", "weights", "best_fixed_konafa.pt"))
+    if not os.path.exists(MODEL_PATH):
+        MODEL_PATH = r"C:\final_gp_pro\ai_model\weights\best_fixed_konafa.pt"
 
 try:
     model = YOLO(MODEL_PATH)
-    print("=======> YOLO Model Loaded Successfully! <=======")
+    print(f"=======> YOLO Model Loaded Successfully from: {MODEL_PATH} <=======")
 except Exception as e:
     model = None
     print(f"=======> Error Loading Model: {str(e)} <=======")

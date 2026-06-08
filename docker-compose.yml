@@ -19,6 +19,8 @@ services:
       - db
     environment:
       - MONGO_URI=mongodb://db:27017/
+    volumes:
+      - ./ai_model:/ai_model
     restart: always
 
   frontend:

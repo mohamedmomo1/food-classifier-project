@@ -14,11 +14,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
+# Upgrade pip and configure timeout parameters
+RUN pip install --no-cache-dir --default-timeout=1000 --upgrade pip
+
+# Install CPU-only PyTorch & Torchvision first to avoid downloading heavy CUDA wheels (~2.5GB+)
+# Pinned to stable, widely compatible versions for CPU inference
+RUN pip install --no-cache-dir --default-timeout=1000 \
+    torch==2.2.2+cpu \
+    torchvision==0.17.2+cpu \
+    --index-url https://download.pytorch.org/whl/cpu
+
 # Copy the requirements file into the container at /app
 COPY requirements.txt /app/
 
-# Install python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install the rest of python dependencies (ultralytics will detect PyTorch is already installed)
+RUN pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
 
 # Copy the rest of the application code into the container
 COPY . /app/

@@ -1,26 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
-  <!-- Outer Circle -->
-  <circle cx="80" cy="100" r="70" fill="none" stroke="#4ecca7" stroke-width="8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 160">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="ring-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#054c38"/>
+      <stop offset="100%" stop-color="#8cc63f"/>
+    </linearGradient>
+    
+    <linearGradient id="apple-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8cc63f"/>
+      <stop offset="100%" stop-color="#ffa500"/>
+    </linearGradient>
+  </defs>
 
-  <!-- Inner design -->
-  <circle cx="80" cy="100" r="55" fill="none" stroke="#2a8659" stroke-width="3" opacity="0.6"/>
+  <!-- === EMBLEM (Left Section) === -->
+  <g transform="translate(10, 0)">
+    <!-- Outer Ring -->
+    <circle cx="90" cy="80" r="62" fill="none" stroke="url(#ring-grad)" stroke-width="7"/>
 
-  <!-- Apple shape -->
-  <path d="M 60 75 Q 50 65 65 60 Q 75 55 75 65 Q 75 75 65 85 Q 55 92 60 75 Z" fill="#4ecca7"/>
-  <circle cx="75" cy="75" r="3" fill="#2a8659"/>
+    <!-- Dark Inner Background Circle -->
+    <circle cx="90" cy="80" r="58" fill="#004838" />
 
-  <!-- Fork shape -->
-  <line x1="85" y1="95" x2="95" y2="65" stroke="#4ecca7" stroke-width="3" stroke-linecap="round"/>
-  <line x1="95" y1="65" x2="90" y2="130" stroke="#4ecca7" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="90" cy="135" r="3" fill="#4ecca7"/>
-  <line x1="85" y1="70" x2="92" y2="75" stroke="#4ecca7" stroke-width="2"/>
+    <!-- Shutter Blades (Tangents to Inner Circle) -->
+    <path d="M 90 20 L 128 58" stroke="#8cc63f" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+    <path d="M 142 50 L 128 102" stroke="#8cc63f" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+    <path d="M 142 110 L 90 124" stroke="#8cc63f" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+    <path d="M 90 140 L 52 102" stroke="#8cc63f" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+    <path d="M 38 110 L 52 58" stroke="#8cc63f" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+    <path d="M 38 50 L 90 36" stroke="#8cc63f" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
 
-  <!-- Leaf accent -->
-  <path d="M 70 70 Q 65 65 70 60 Q 75 65 70 70 Z" fill="#a8d35f" opacity="0.8"/>
+    <!-- Inner Circle Border -->
+    <circle cx="90" cy="80" r="44" fill="none" stroke="#8cc63f" stroke-width="2" opacity="0.4"/>
 
-  <!-- Text: BEFIT -->
-  <text x="160" y="120" font-size="72" font-weight="bold" font-family="Arial, sans-serif" fill="#2a8659" letter-spacing="2">BEFIT</text>
+    <!-- Apple Body (with gradient) -->
+    <path d="M 90 68 C 82 56, 68 56, 64 74 C 60 92, 70 110, 90 110 C 110 110, 120 92, 116 74 C 112 56, 98 56, 90 68 Z" 
+          fill="url(#apple-grad)"/>
 
-  <!-- Tagline -->
-  <text x="160" y="150" font-size="20" font-family="Arial, sans-serif" fill="#7a9f9f" letter-spacing="4">SNAP.TRACK.ACHIEVE.</text>
+    <!-- Apple Stem Cutout -->
+    <path d="M 90 68 Q 92 60, 95 56" fill="none" stroke="#004838" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- Leaf -->
+    <path d="M 94 56 C 94 46, 102 40, 106 44 C 106 54, 98 56, 94 56 Z" fill="#8cc63f"/>
+
+    <!-- Fork Cutout (Drawn in background color #004838 to simulate transparency) -->
+    <path d="M 74 104 L 88 90" stroke="#004838" stroke-width="5.5" stroke-linecap="round" />
+    <path d="M 88 90 C 90 88, 92 88, 93 90 L 98 81" stroke="#004838" stroke-width="3.5" stroke-linecap="round" fill="none" />
+    <path d="M 91 87 L 95 78" stroke="#004838" stroke-width="3.5" stroke-linecap="round" />
+    <path d="M 85 93 L 89 84" stroke="#004838" stroke-width="3.5" stroke-linecap="round" />
+
+    <!-- Dynamic Tracking / Connection Line -->
+    <path d="M 90 118 A 38 38 0 0 0 123 98" fill="none" stroke="#8cc63f" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="123" cy="98" r="4.5" fill="#8cc63f"/>
+  </g>
+
+  <!-- === TYPOGRAPHY (Right Section) === -->
+  <!-- Letter b (with stylized person dot) -->
+  <path d="M 172 52 L 172 108" fill="none" stroke="#005953" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="190" cy="90" r="18" fill="none" stroke="#005953" stroke-width="8"/>
+  <circle cx="190" cy="52" r="5.5" fill="#005953"/>
+
+  <!-- Letter e -->
+  <path d="M 214 90 L 250 90 A 18 18 0 1 0 216 102" fill="none" stroke="#005953" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Letter f -->
+  <path d="M 282 108 L 282 62 A 12 12 0 0 1 294 50" fill="none" stroke="#82d11f" stroke-width="8" stroke-linecap="round"/>
+  <line x1="272" y1="72" x2="292" y2="72" stroke="#82d11f" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Letter i -->
+  <line x1="312" y1="72" x2="312" y2="108" stroke="#82d11f" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="312" cy="52" r="5.5" fill="#82d11f"/>
+
+  <!-- Letter t -->
+  <path d="M 332 55 L 332 98 A 10 10 0 0 0 342 108" fill="none" stroke="#82d11f" stroke-width="8" stroke-linecap="round"/>
+  <line x1="324" y1="72" x2="340" y2="72" stroke="#82d11f" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Tagline (Contrast color for dark backgrounds) -->
+  <text x="172" y="142" font-size="16" font-weight="bold" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" fill="#d2e3e3" letter-spacing="3.5">SNAP. TRACK. ACHIEVE.</text>
 </svg>

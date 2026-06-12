@@ -5,3 +5,4 @@ pymongo
 bcrypt
 ultralytics
 pillow
+numpy<2

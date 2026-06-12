@@ -17,12 +17,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Upgrade pip and configure timeout parameters
 RUN pip install --no-cache-dir --default-timeout=1000 --upgrade pip
 
-# Install CPU-only PyTorch & Torchvision first to avoid downloading heavy CUDA wheels (~2.5GB+)
-# Pinned to stable, widely compatible versions for CPU inference
-RUN pip install --no-cache-dir --default-timeout=1000 \
-    torch==2.2.2+cpu \
-    torchvision==0.17.2+cpu \
-    --index-url https://download.pytorch.org/whl/cpu
+# Install CPU-only PyTorch & Torchvision. Auto-detects architecture to pull the correct package index:
+# - On AMD64 (x86_64), downloads CPU-only wheels from PyTorch wheel repository to avoid heavy CUDA wheels
+# - On ARM64 (aarch64), installs CPU-only wheels directly from standard PyPI
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "x86_64" ]; then \
+        pip install --no-cache-dir --default-timeout=1000 \
+            torch==2.2.2+cpu \
+            torchvision==0.17.2+cpu \
+            --index-url https://download.pytorch.org/whl/cpu; \
+    else \
+        pip install --no-cache-dir --default-timeout=1000 \
+            torch==2.2.2 \
+            torchvision==0.17.2; \
+    fi
 
 # Copy the requirements file into the container at /app
 COPY requirements.txt /app/
